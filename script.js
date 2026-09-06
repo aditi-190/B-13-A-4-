@@ -191,7 +191,7 @@ function displayJobs() {
 
             <div class="job-info">
 
-                <span>📍 ${job.location}</span>
+                <span> ${job.location}</span>
 
                 <span>• ${job.type}</span>
 
@@ -305,7 +305,7 @@ function setRejected(id) {
     }
 
 
-    // Stay in current tab
+   
     displayJobs();
 
 }
