@@ -97,3 +97,328 @@ const jobs = [
         status: "not-applied"
     }
 ];
+const jobsContainer = document.getElementById("jobs-container");
+
+const noJobs = document.getElementById("no-jobs");
+
+const totalCount = document.getElementById("total-count");
+
+const interviewCount = document.getElementById("interview-count");
+
+const rejectedCount = document.getElementById("rejected-count");
+
+const jobCount = document.getElementById("job-count");
+
+const allTab = document.getElementById("all-tab");
+
+const interviewTab = document.getElementById("interview-tab");
+
+const rejectedTab = document.getElementById("rejected-tab");
+
+
+let currentTab = "all";
+
+
+
+
+function displayJobs() {
+
+    
+    jobsContainer.innerHTML = "";
+
+
+  
+    let filteredJobs = jobs.filter(function (job) {
+
+        if (currentTab === "all") {
+            return true;
+        }
+
+        return job.status === currentTab;
+
+    });
+
+
+    jobCount.innerText = filteredJobs.length;
+
+
+    
+    if (filteredJobs.length === 0) {
+
+        noJobs.style.display = "flex";
+
+    } else {
+
+        noJobs.style.display = "none";
+
+    }
+
+
+   
+    filteredJobs.forEach(function (job) {
+
+        const card = document.createElement("div");
+
+        card.classList.add("job-card");
+
+
+        card.innerHTML = `
+
+            <div class="job-card-header">
+
+                <div>
+
+                    <h3 class="company-name">
+                        ${job.companyName}
+                    </h3>
+
+                    <p class="position">
+                        ${job.position}
+                    </p>
+
+                </div>
+
+
+                <button 
+                    class="delete-btn"
+                    onclick="deleteJob(${job.id})"
+                >
+                    🗑
+                </button>
+
+            </div>
+
+
+            <div class="job-info">
+
+                <span>📍 ${job.location}</span>
+
+                <span>• ${job.type}</span>
+
+                <span>• ${job.salary}</span>
+
+            </div>
+
+
+            <p class="description">
+                ${job.description}
+            </p>
+
+
+            <span class="status">
+                ${getStatusText(job.status)}
+            </span>
+
+
+            <div class="job-actions">
+
+                <button
+                    class="interview-btn"
+                    onclick="setInterview(${job.id})"
+                >
+                    INTERVIEW
+                </button>
+
+
+                <button
+                    class="rejected-btn"
+                    onclick="setRejected(${job.id})"
+                >
+                    REJECTED
+                </button>
+
+            </div>
+
+        `;
+
+
+        jobsContainer.appendChild(card);
+
+    });
+
+
+
+    updateDashboard();
+
+}
+
+
+
+
+function getStatusText(status) {
+
+    if (status === "interview") {
+
+        return "INTERVIEW";
+
+    }
+
+    if (status === "rejected") {
+
+        return "REJECTED";
+
+    }
+
+    return "NOT APPLIED";
+
+}
+
+
+
+
+function setInterview(id) {
+
+    const job = jobs.find(function (job) {
+
+        return job.id === id;
+
+    });
+
+
+    if (job) {
+
+        job.status = "interview";
+
+    }
+
+
+    displayJobs();
+
+}
+
+
+
+
+function setRejected(id) {
+
+    const job = jobs.find(function (job) {
+
+        return job.id === id;
+
+    });
+
+
+    if (job) {
+
+        job.status = "rejected";
+
+    }
+
+
+    // Stay in current tab
+    displayJobs();
+
+}
+
+
+
+
+function deleteJob(id) {
+
+    const index = jobs.findIndex(function (job) {
+
+        return job.id === id;
+
+    });
+
+
+    if (index !== -1) {
+
+        jobs.splice(index, 1);
+
+    }
+
+
+    displayJobs();
+
+}
+
+
+
+function updateDashboard() {
+
+    const totalJobs = jobs.length;
+
+
+    const interviewJobs = jobs.filter(function (job) {
+
+        return job.status === "interview";
+
+    }).length;
+
+
+    const rejectedJobs = jobs.filter(function (job) {
+
+        return job.status === "rejected";
+
+    }).length;
+
+
+    totalCount.innerText = totalJobs;
+
+    interviewCount.innerText = interviewJobs;
+
+    rejectedCount.innerText = rejectedJobs;
+
+}
+
+
+
+
+allTab.addEventListener("click", function () {
+
+    currentTab = "all";
+
+
+    allTab.classList.add("active");
+
+    interviewTab.classList.remove("active");
+
+    rejectedTab.classList.remove("active");
+
+
+    displayJobs();
+
+});
+
+
+
+
+interviewTab.addEventListener("click", function () {
+
+    currentTab = "interview";
+
+
+    interviewTab.classList.add("active");
+
+    allTab.classList.remove("active");
+
+    rejectedTab.classList.remove("active");
+
+
+    displayJobs();
+
+});
+
+
+
+
+rejectedTab.addEventListener("click", function () {
+
+    currentTab = "rejected";
+
+
+    rejectedTab.classList.add("active");
+
+    allTab.classList.remove("active");
+
+    interviewTab.classList.remove("active");
+
+
+    displayJobs();
+
+});
+
+
+
+displayJobs();
